@@ -15,9 +15,9 @@ const App = () => {
   async function fetchData() {
     setLoading(true);
     try {
-      const response = await fetch(`https://amity-hackathon.herokuapp.com/city/${city}/interest`);
+      const response = await fetch(`http://127.0.0.1:8000/api/users?city=${city}`);
       const json = await response.json();
-
+      console.log(json);
       let userData = [];
       userData.push(json);
 
@@ -30,7 +30,8 @@ const App = () => {
       }
       let temp = [];
       temp.push(["Interests", "Count of Interests"]);
-      userData[0].interestCountList.forEach((item) => temp.push([item.interest, item.count]));
+      const interestOfPeople = JSON.parse(userData[0].interestCount);
+      interestOfPeople.forEach((item) => temp.push([item.interest, item.count]));
 
       setUserInterests(temp);
       setCity(json.city);
@@ -55,8 +56,9 @@ const App = () => {
   }
 
   const submitHandler = event => {
-   event.preventDefault();
-   fetchData();
+    console.log("Submit");
+    event.preventDefault();
+    fetchData();
   }
 
   return (
@@ -66,8 +68,8 @@ const App = () => {
       {loading && <LoadingSpinner />}
       <div className ="form-container">
         <form className="city-search-form" onSubmit={submitHandler}>
-          <label className="city-label">Type a City:</label>
-          <input type="text" value={`${city}`} onChange={changeHandler} />
+          <label className="city-label">City:</label>
+          <input type="text" placeholder="Type a city..." value={`${city}`} onChange={changeHandler} />
           <Button disabled={!`${city}`} type="submit"> Search</Button>
         </form>
       </div>
